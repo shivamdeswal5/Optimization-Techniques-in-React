@@ -4,7 +4,7 @@ import RecipeItem from './receipe-items';
 import Typography from '@mui/material/Typography';
 import useRecipe from '../../hooks/useRecipe';
 import Pagination from '../pagination';
-import {useState,useCallback } from 'react';
+import {useState,useCallback,useMemo } from 'react';
 import Button from '@mui/joy/Button';
 import { useNavigate } from 'react-router';
 
@@ -39,6 +39,7 @@ export default function Recipe() {
   const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
     setSearchItem(e.target.value);
     console.log(searchItem);
+    setCurrentPage(1);
   }
 
 
