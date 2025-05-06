@@ -1,0 +1,18 @@
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination button {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: black;
+    border-color: #eee;
+    padding: 1rem;
+}
+
+.pagination button:hover {
+   background: transparent;
+}

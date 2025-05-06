@@ -1,0 +1,40 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    gap: 1rem;
+    
+    
+}
+.border{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border: 5px solid rgba(128, 128, 128, 0.322);
+    padding: 1rem;
+}
+
+.name{
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.tags{  
+    gap: 1rem;
+    margin-top: 0.5rem;
+    align-items: center;
+    display: flex;
+}
+
+.tag{
+    background-color: rgba(252, 237, 32, 0.651);
+    color: black;
+    padding: 0.5rem 2rem;
+    border-radius: 22px;
+    border: 1px solid rgba(49, 47, 47, 0.37);
+}
