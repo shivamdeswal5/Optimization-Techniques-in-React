@@ -10,14 +10,24 @@ import { useNavigate } from 'react-router';
 
 export default function Recipe() {
   const {recipes } = useRecipe();
+  const [searchItem, setSearchItem] = useState("");
   const [currentPage,setCurrentPage] = useState(1);
   const [postPerPage,setPostPerPage] = useState(8);
   const navigate  = useNavigate();
 
+  type SomeFunction = (...args: any[]) => void;
+
   const lastPostIndex = currentPage * postPerPage;
   const firstPostIndex = lastPostIndex - postPerPage;
 
-  const paginationData = recipes.slice(firstPostIndex,lastPostIndex);
+
+  // filter data
+  const filterData = recipes.filter((recipe)=>{
+    return searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem);
+  });
+
+  
+  const paginationData = filterData.slice(firstPostIndex,lastPostIndex);
 
 
   function logoutHandler(){
@@ -25,15 +35,37 @@ export default function Recipe() {
     navigate('/login');   
   }
 
+  const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
+    setSearchItem(e.target.value);
+    console.log(searchItem);
+  }
+
+
+
+  const debounce = (func:SomeFunction,wait:number) =>{
+    let timerId : number
+    return (...args:unknown[]) =>{
+      clearTimeout(timerId);
+      timerId = setTimeout(()=> func(...args),wait)
+    }
+  }
+  
+  const debounceCall = debounce(handleSearch,400);
   
   return (
     <Box className={style.recipeContainer}>
+ 
       <Box className = {style.logout}>
         <Typography variant="h2" gutterBottom className={style.heading}>
           Recipes
         </Typography>
         <Button onClick={logoutHandler}>Logout</Button>
       </Box>
+
+      <div className={style.searchBar}>
+        <input className={style.search} type="text" placeholder='Search for Products' onChange={debounceCall} />
+      </div>
+
       <Box className={style.recipeItems}>
         {
           paginationData.map((recipe)=>{
@@ -53,7 +85,7 @@ export default function Recipe() {
       </Box>
       <Box className = {style.pagination}>
         <Pagination 
-        totalPosts = {recipes.length} 
+        totalPosts = {filterData.length} 
         postPerPage = {postPerPage} 
         setCurrentPage ={setCurrentPage}
         currentPage = {currentPage}
