@@ -2,16 +2,10 @@
 import { useState } from "react";
 
 const useLocalStorage = (key:string, defaultValue:[]) => {
-    // Create state variable to store 
-    // localStorage value in state
     const [localStorageValue, setLocalStorageValue] = useState(() => {
         try {
             const value = localStorage.getItem(key)
-            // If value is already present in 
-            // localStorage then return it
-            
-            // Else set default value in 
-            // localStorage and then return it
+
             if (value) {
                 return JSON.parse(value)
             } else {
@@ -25,7 +19,6 @@ const useLocalStorage = (key:string, defaultValue:[]) => {
         }
     })
 
-    // this method update our localStorage and our state
     const setLocalStorageStateValue = (valueOrFn: object ) => {
         let newValue;
         if (typeof valueOrFn === 'function') {
