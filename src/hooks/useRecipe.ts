@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState,useMemo} from "react"
 import useLocalStorage from "./useLocalStorage";
 
-const url = 'https://dummyjson.com/recipes';
+
+const url: string = 'https://dummyjson.com/recipes';
+console.log(url);
 
 interface Recipe {
     id: number,
@@ -39,9 +41,13 @@ const useRecipe = () => {
         }
     }
 
-    useEffect(() => {
+    useMemo(()=>{
         fetchData();
-    }, []);
+    },[])
+
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
 
     return { recipes, loading,error, fetchData }
 

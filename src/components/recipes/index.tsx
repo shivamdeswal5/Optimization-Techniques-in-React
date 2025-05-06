@@ -4,17 +4,18 @@ import RecipeItem from './receipe-items';
 import Typography from '@mui/material/Typography';
 import useRecipe from '../../hooks/useRecipe';
 import Pagination from '../pagination';
-import { useState } from 'react';
+import {useState,useCallback } from 'react';
 import Button from '@mui/joy/Button';
 import { useNavigate } from 'react-router';
 
+
 export default function Recipe() {
-  const {recipes } = useRecipe();
+  const {recipes} = useRecipe();
   const [searchItem, setSearchItem] = useState("");
   const [currentPage,setCurrentPage] = useState(1);
   const [postPerPage,setPostPerPage] = useState(8);
   const navigate  = useNavigate();
-
+  
   type SomeFunction = (...args: any[]) => void;
 
   const lastPostIndex = currentPage * postPerPage;
