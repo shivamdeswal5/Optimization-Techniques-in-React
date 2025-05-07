@@ -4,7 +4,7 @@ import RecipeItem from './receipe-items';
 import Typography from '@mui/material/Typography';
 import useRecipe from '../../hooks/useRecipe';
 import Pagination from '../pagination';
-import {useState } from 'react';
+import {useState,useCallback,useMemo } from 'react';
 import Button from '@mui/joy/Button';
 import { useNavigate } from 'react-router';
 
@@ -23,9 +23,11 @@ export default function Recipe() {
 
 
   // filter data
-  const filterData = recipes.filter((recipe)=>{
-    return searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem);
-  });
+  const filterData = useMemo(()=>{
+    return recipes.filter((recipe)=>
+      searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem)
+  )
+  },[recipes,searchItem]);
 
   
   const paginationData = filterData.slice(firstPostIndex,lastPostIndex);
@@ -36,11 +38,12 @@ export default function Recipe() {
     navigate('/login');   
   }
 
-  const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
+  const handleSearch = useCallback((e:React.ChangeEvent<HTMLInputElement >) => {
     setSearchItem(e.target.value);
     console.log(searchItem);
     setCurrentPage(1);
-  }
+  },[]
+);
 
 
 
