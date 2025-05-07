@@ -1,3 +1,12 @@
+.table{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1rem;
+    flex-direction: column;
+    position: relative;
+}
 .recipeContainer{
     display: flex;
     align-items: center;
@@ -60,8 +69,8 @@
 .noDataFound{
     display: flex;
     align-items: center;
+    font-size: 3rem;
     justify-content: center;
     height: 50vh;
     color: red;
-    font-size: 3rem;
 }

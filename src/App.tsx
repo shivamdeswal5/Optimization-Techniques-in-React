@@ -8,6 +8,7 @@ import RecipeId from './components/recipes/receipe-items/recipeId';
 import RecipeData from './components/recipe-mui-table';
 import useRecipe from './hooks/useRecipe';
 import Spinner from './components/spinner';
+import Products from './components/products';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Navigate to="/signup" />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/products" element={<Products />} />
           <Route
             path="/recipe"
             element={

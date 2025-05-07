@@ -1,4 +1,4 @@
-import { useEffect, useState,useMemo} from "react"
+import { useEffect, useState,useMemo,useRef} from "react"
 import useLocalStorage from "./useLocalStorage";
 
 
@@ -22,6 +22,7 @@ const useRecipe = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
+    const hasFetched = useRef(false);
 
     async function fetchData() {
         try {
@@ -41,9 +42,13 @@ const useRecipe = () => {
         }
     }
 
-    useMemo(()=>{
-        fetchData();
-    },[])
+    // useEffect(()=>{
+    //   if(!hasFetched.current){
+    //     hasFetched.current = true;
+    //     fetchData();
+    //   }
+        
+    // },[])
 
     // useEffect(() => {
     //     fetchData();

@@ -23,7 +23,7 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 70 },
+  { id: 'name', label: 'Name', minWidth: 150 },
   {
     id: 'ingredients',
     label: 'Ingredients',
@@ -47,10 +47,13 @@ const columns: readonly Column[] = [
   },
 ];
 
+type SomeFunction = (...args: any[]) => void;
+
 export default function RecipeData() {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(4);
+    const [searchItem, setSearchItem] = useState("");
     const navigate  = useNavigate();
   
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -67,7 +70,25 @@ export default function RecipeData() {
       navigate('/login');   
     }
 
+    const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
+      setSearchItem(e.target.value);
+      console.log(searchItem);
+    }
+  
+    const debounce = (func:SomeFunction,wait:number) =>{
+      let timerId : number
+      return (...args:unknown[]) =>{
+        clearTimeout(timerId);
+        timerId = setTimeout(()=> func(...args),wait)
+      }
+    }
+    
+  const debounceCall = debounce(handleSearch,300);
+    
   const {recipes} = useRecipe();
+  const filterData = recipes.filter((recipe)=>{
+    return searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem);
+  })
 
   return (
     <Box className={style.recipeContainer}>
@@ -79,54 +100,63 @@ export default function RecipeData() {
         <Button onClick={logoutHandler}>Logout</Button>
       </Box>
 
-      <Paper sx={{ width: '70%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {recipes
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((recipe) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={recipe.id}>
-                    {columns.map((column) => {
-                      const value = recipe[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={recipes.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+      <Box className={style.searchBar}>
+        <input className={style.search} type="text" placeholder='Search for Products' onChange={debounceCall} />
+      </Box>
+      {
+        filterData.length === 0 ?
+        <Box className = {style.noDataFound}>
+          No Such Data Found ...
+        </Box> :
+        <Paper sx={{ width: '70%', overflow: 'hidden' }}>
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filterData
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((recipe) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={recipe.id}>
+                      {columns.map((column) => {
+                        const value = recipe[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[4, 6, 10]}
+          component="div"
+          count={recipes.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        </Paper>
+      }
 
     </Box>
   )

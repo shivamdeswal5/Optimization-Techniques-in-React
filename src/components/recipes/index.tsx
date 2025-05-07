@@ -4,7 +4,7 @@ import RecipeItem from './receipe-items';
 import Typography from '@mui/material/Typography';
 import useRecipe from '../../hooks/useRecipe';
 import Pagination from '../pagination';
-import {useState,useCallback,useMemo } from 'react';
+import {useState} from 'react';
 import Button from '@mui/joy/Button';
 import { useNavigate } from 'react-router';
 
@@ -14,6 +14,7 @@ export default function Recipe() {
   const [searchItem, setSearchItem] = useState("");
   const [currentPage,setCurrentPage] = useState(1);
   const [postPerPage,setPostPerPage] = useState(8);
+
   const navigate  = useNavigate();
   
   type SomeFunction = (...args: any[]) => void;
@@ -23,27 +24,22 @@ export default function Recipe() {
 
 
   // filter data
-  const filterData = useMemo(()=>{
-    return recipes.filter((recipe)=>
-      searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem)
-  )
-  },[recipes,searchItem]);
+  const filterData = recipes.filter((recipe)=>{
+    return searchItem.toLowerCase() === '' ? recipe : recipe.name.toLowerCase().includes(searchItem);
+  })
 
-  
   const paginationData = filterData.slice(firstPostIndex,lastPostIndex);
-
 
   function logoutHandler(){
     sessionStorage.removeItem('currentUser');
     navigate('/login');   
   }
 
-  const handleSearch = useCallback((e:React.ChangeEvent<HTMLInputElement >) => {
+  const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
     setSearchItem(e.target.value);
     console.log(searchItem);
     setCurrentPage(1);
-  },[]
-);
+  }
 
 
 
@@ -73,6 +69,12 @@ export default function Recipe() {
 
       <Box className={style.recipeItems}>
         {
+          
+          paginationData.length === 0 ?
+          <Box className = {style.noDataFound}>
+            No Such Recipe Found ...
+          </Box> :
+
           paginationData.map((recipe)=>{
             return <RecipeItem key = {recipe.id} 
             name = {recipe.name}
@@ -84,9 +86,7 @@ export default function Recipe() {
             id = {recipe.id}
              />
           })
-               
         }
-
       </Box>
       <Box className = {style.pagination}>
         <Pagination 
