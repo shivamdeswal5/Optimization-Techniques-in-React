@@ -42,7 +42,7 @@ export default function Signup() {
       if(user.email === data.email && user.password === data.password){
         alert("Welcome ... ");
         sessionStorage.setItem("currentUser",JSON.stringify(user));
-        navigate('/recipe');
+        navigate('/products');
       }else{
         alert("Invalid Email or Password ..");
       }

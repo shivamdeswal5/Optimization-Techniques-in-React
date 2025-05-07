@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useGetAllProductsQuery, useGetProductQuery } from '../../features/apiSlice'
+import { useGetProductQuery, useListPagesQuery } from '../../features/apiSlice'
 import { Box} from '@mui/system';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router';
@@ -17,13 +17,18 @@ const columns: GridColDef[] = [
   { field: 'price',headerName: 'Price', width: 160, },
 ];
 
-const paginationModel = { page: 0, pageSize: 5 };
 
 export default function Products() {
-    let {data} = useGetProductQuery(""); 
+    
     console.log("Testing Query: ",useGetProductQuery(""))
     const [searchItem, setSearchItem] = useState("");
+    const [pagination,setPagination] = useState({
+      limit: 5,
+      skip : 0
+    })
     const navigate  = useNavigate();
+    const {data} = useGetProductQuery(searchItem); 
+    const paginationData = useListPagesQuery(pagination);
 
     function logoutHandler(){
         sessionStorage.removeItem('currentUser');
@@ -33,7 +38,6 @@ export default function Products() {
     const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
         setSearchItem(e.target.value);
         console.log(searchItem);
-
     }
     
       const debounce = (func:SomeFunction,wait:number) =>{
@@ -44,7 +48,7 @@ export default function Products() {
         }
       }
     
-      const debounceCall = debounce(handleSearch,400);
+      const debounceCall = debounce(handleSearch,600);
 
   return (
 
@@ -64,13 +68,17 @@ export default function Products() {
 
         <Paper sx={{ height: 400, width: '80%'}}>
         <DataGrid
-            rows={data?.products}
+            rows={paginationData?.data?.products}
             columns={columns}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10]}
+            // initialState={{ pagination: { paginationModel } }}
+            // pageSizeOptions={[5, 10]}
             sx={{ border: 0 }}
         />
         </Paper>
+        <Box sx={{display:'flex' ,alignItems:'center' ,justifyContent:'center', gap:'1rem'}}>
+        <Button onClick={()=>setPagination({limit: pagination.limit,skip: pagination.skip-5})}>Prev</Button>
+        <Button onClick={()=>setPagination({limit: pagination.limit,skip: pagination.skip+5})}>Next</Button>
+        </Box>
     </div>
 
   )
