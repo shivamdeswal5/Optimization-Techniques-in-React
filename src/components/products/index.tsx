@@ -23,12 +23,20 @@ export default function Products() {
     console.log("Testing Query: ",useGetProductQuery(""))
     const [searchItem, setSearchItem] = useState("");
     const [pagination,setPagination] = useState({
+      search: searchItem,
       limit: 5,
       skip : 0
     })
     const navigate  = useNavigate();
-    const {data} = useGetProductQuery(searchItem); 
-    const paginationData = useListPagesQuery(pagination);
+    const {data} = useGetProductQuery({
+        search: searchItem,
+        limit: pagination.limit,
+        skip: pagination.skip
+    }); 
+
+    console.log("Data: ",data)
+
+    const totalPages = data ? Math.ceil(data.total / pagination.limit) : 0;
 
     function logoutHandler(){
         sessionStorage.removeItem('currentUser');
@@ -37,6 +45,11 @@ export default function Products() {
 
     const handleSearch = (e:React.ChangeEvent<HTMLInputElement >) => {
         setSearchItem(e.target.value);
+        setPagination(prev => ({
+          ...prev,
+          skip: 0
+        }));
+
         console.log(searchItem);
     }
     
@@ -68,16 +81,41 @@ export default function Products() {
 
         <Paper sx={{ height: 400, width: '80%'}}>
         <DataGrid
-            rows={paginationData?.data?.products}
+            rows={data?.products}
             columns={columns}
             // initialState={{ pagination: { paginationModel } }}
             // pageSizeOptions={[5, 10]}
+            hideFooterPagination  
             sx={{ border: 0 }}
         />
         </Paper>
         <Box sx={{display:'flex' ,alignItems:'center' ,justifyContent:'center', gap:'1rem'}}>
-        <Button onClick={()=>setPagination({limit: pagination.limit,skip: pagination.skip-5})}>Prev</Button>
-        <Button onClick={()=>setPagination({limit: pagination.limit,skip: pagination.skip+5})}>Next</Button>
+          <Button 
+          disabled ={pagination.skip===0}
+          onClick={() =>
+            setPagination((prev) => ({
+              ...prev,
+              skip: Math.max(prev.skip - 5, 0),
+              search: searchItem,
+            }))}
+          >Prev</Button>
+
+              <Typography variant="body1">
+              Page {Math.floor(pagination.skip / pagination.limit) + 1} of {totalPages}
+            </Typography>
+
+           <Button
+          disabled={pagination.skip + pagination.limit >= data?.total}
+          onClick={() =>
+            setPagination((prev) => ({
+              ...prev,
+              skip: prev.skip + 5,
+              search: searchItem,
+            }))
+          }
+        >
+          Next
+        </Button>
         </Box>
     </div>
 

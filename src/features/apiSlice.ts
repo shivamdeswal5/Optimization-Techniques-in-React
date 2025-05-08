@@ -21,7 +21,7 @@ export const productsApi = createApi({
         }),
 
         getProduct: builder.query({
-            query:(product) => `products/search?q=${product}`,
+            query:({search,limit,skip}) => `products/search?q=${search}&limit=${limit}&skip=${skip}`,
         }),
 
         listPages : builder.query({
