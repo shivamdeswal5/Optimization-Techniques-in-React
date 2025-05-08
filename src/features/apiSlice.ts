@@ -26,8 +26,12 @@ export const productsApi = createApi({
 
         listPages : builder.query({
             query:(pagination) => `products?limit=${pagination.limit}&skip=${pagination.skip}`, 
-        })
+        }),
+
+        getProductById: builder.query({
+            query: (id) => `products/${id}`,
+        }),
     }),
 });
 
-export const {useGetAllProductsQuery,useGetProductQuery,useListPagesQuery} = productsApi
+export const {useGetAllProductsQuery,useGetProductQuery,useListPagesQuery,useGetProductByIdQuery} = productsApi
