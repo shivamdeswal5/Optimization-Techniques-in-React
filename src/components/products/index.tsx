@@ -1,22 +1,13 @@
 import React, { useState } from 'react'
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useGetProductQuery, useListPagesQuery } from '../../features/apiSlice'
+import { useGetProductQuery} from '../../features/apiSlice'
 import { Box} from '@mui/system';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router';
 import style from './style.module.css'
 import Typography from '@mui/material/Typography';
 type SomeFunction = (...args: any[]) => void;
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 50 },
-  { field: 'title', headerName: 'Title', width: 250 },
-  { field: 'description', headerName: 'Description', width: 400 },
-  { field: 'category',headerName: 'Category', width: 100,},
-  { field: 'price',headerName: 'Price', width: 160, },
-];
-
 
 export default function Products() {
     
@@ -27,6 +18,22 @@ export default function Products() {
       limit: 5,
       skip : 0
     })
+    const columns: GridColDef[] = [
+      { field: 'id', headerName: 'ID', width: 50 },
+      { field: 'title', headerName: 'Title', width: 250 },
+      { field: 'description', headerName: 'Description', width: 400 },
+      { field: 'category',headerName: 'Category', width: 100,},
+      { field: 'price',headerName: 'Price', width: 160, },
+      {field: 'action',headerName: 'More Details', width:160,
+        renderCell: (params) =>(
+          <Button onClick={()=>handleSubmit(params.row.id)}>View</Button>
+        )
+      }
+    ];
+    
+    function handleSubmit(id:number){
+      navigate(`/products/${id}`)          
+    }
     const navigate  = useNavigate();
     const {data} = useGetProductQuery({
         search: searchItem,
@@ -69,7 +76,7 @@ export default function Products() {
 
         <Box className = {style.logout}>
         <Typography variant="h2" gutterBottom className={style.heading}>
-          Recipes
+          Products
         </Typography>
         <Button onClick={logoutHandler}>Logout</Button>
       </Box>

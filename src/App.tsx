@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route,Navigate } from "react-router-dom";
 import Login from './pages/login';
 import ProtectedRoute from './routes/protected';
 import Products from './components/products';
+import Product from './components/products/product';
 
 
 function App() {
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoute >
                   <Products/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products/:id"
+            element={
+              <ProtectedRoute >
+                  <Product/>
               </ProtectedRoute>
             }
           />
